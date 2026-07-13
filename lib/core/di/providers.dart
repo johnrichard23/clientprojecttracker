@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:client_project_tracker/core/di/app_database.dart';
 import 'package:client_project_tracker/features/projects/data/datasources/project_seed_loader.dart';
@@ -10,6 +11,18 @@ import 'package:client_project_tracker/features/projects/domain/usecases/delete_
 import 'package:client_project_tracker/features/projects/domain/usecases/get_project_by_id.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/get_projects.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/update_project.dart';
+
+/// Provides the app's [SharedPreferences] instance for simple key/value state
+/// persistence (theme mode, last-used list filter/search - see
+/// docs/architecture.md, Section 10). `SharedPreferences.getInstance()` is
+/// async, so this must be overridden in `main()` after awaiting it once;
+/// there is no synchronous default.
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError(
+    'sharedPreferencesProvider must be overridden with a real '
+    'SharedPreferences instance before the app starts (see main.dart).',
+  );
+});
 
 /// Single AppDatabase instance for the app's lifetime. Closed on dispose so
 /// tests that create a fresh ProviderContainer per test don't leak
