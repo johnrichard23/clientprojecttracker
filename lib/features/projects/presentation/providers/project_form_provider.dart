@@ -7,6 +7,7 @@ import 'package:client_project_tracker/features/projects/domain/entities/project
 import 'package:client_project_tracker/features/projects/domain/entities/project_status.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/create_project.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/update_project.dart';
+import 'package:client_project_tracker/features/projects/presentation/providers/project_list_provider.dart';
 
 enum ProjectFormMode { create, edit }
 
@@ -44,7 +45,7 @@ class ProjectFormArgs {
 class ProjectFormNotifier
     extends FamilyAsyncNotifier<Project?, ProjectFormArgs> {
   @override
-  Future<Project?> build(ProjectFormArgs arg) async => null;
+  Project? build(ProjectFormArgs arg) => null;
 
   /// Field-level messages from the last [ValidationFailure], if the last
   /// submission failed validation - empty otherwise. The form reads this to
@@ -91,6 +92,10 @@ class ProjectFormNotifier
       (failure) => AsyncValue<Project?>.error(failure, StackTrace.current),
       (project) => AsyncValue<Project?>.data(project),
     );
+
+    if (result.isRight()) {
+      ref.invalidate(projectListProvider);
+    }
   }
 }
 

@@ -9,16 +9,21 @@ import 'package:client_project_tracker/features/projects/domain/entities/project
 import 'package:client_project_tracker/features/projects/domain/entities/project_priority.dart';
 import 'package:client_project_tracker/features/projects/domain/entities/project_status.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/create_project.dart';
+import 'package:client_project_tracker/features/projects/domain/usecases/get_projects.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/update_project.dart';
 import 'package:client_project_tracker/features/projects/presentation/providers/project_form_provider.dart';
+import 'package:client_project_tracker/features/projects/presentation/providers/project_list_provider.dart';
 
 class MockCreateProject extends Mock implements CreateProject {}
 
 class MockUpdateProject extends Mock implements UpdateProject {}
 
+class MockGetProjects extends Mock implements GetProjects {}
+
 void main() {
   late MockCreateProject mockCreateProject;
   late MockUpdateProject mockUpdateProject;
+  late MockGetProjects mockGetProjects;
   late ProviderContainer container;
 
   final project = Project(
@@ -57,9 +62,12 @@ void main() {
   setUp(() {
     mockCreateProject = MockCreateProject();
     mockUpdateProject = MockUpdateProject();
+    mockGetProjects = MockGetProjects();
+    when(() => mockGetProjects()).thenAnswer((_) async => const Right([]));
     container = ProviderContainer(overrides: [
       createProjectProvider.overrideWithValue(mockCreateProject),
       updateProjectProvider.overrideWithValue(mockUpdateProject),
+      getProjectsProvider.overrideWithValue(mockGetProjects),
     ]);
     addTearDown(container.dispose);
   });
@@ -118,6 +126,37 @@ void main() {
       expect(notifier.fieldErrors, {'clientName': 'Client name is required.'});
       verifyNever(() => mockUpdateProject(any()));
     });
+
+    test('invalidates the project list so it refetches after a successful create',
+        () async {
+      when(() => mockCreateProject(any()))
+          .thenAnswer((_) async => Right(project));
+
+      await container.read(projectListProvider.future);
+      verify(() => mockGetProjects()).called(1);
+
+      await submit(args);
+      await container.read(projectListProvider.future);
+
+      verify(() => mockGetProjects()).called(1);
+    });
+
+    test('does not invalidate the project list when create fails validation',
+        () async {
+      final failure = ValidationFailure(
+        'Please fix the highlighted fields.',
+        fieldErrors: {'clientName': 'Client name is required.'},
+      );
+      when(() => mockCreateProject(any()))
+          .thenAnswer((_) async => Left(failure));
+
+      await container.read(projectListProvider.future);
+      verify(() => mockGetProjects()).called(1);
+
+      await submit(args, clientName: '');
+
+      verifyNever(() => mockGetProjects());
+    });
   });
 
   group('edit mode', () {
@@ -157,6 +196,20 @@ void main() {
       expect(notifier.fieldErrors,
           {'dueDate': 'Due date cannot be before the start date.'});
       verifyNever(() => mockCreateProject(any()));
+    });
+
+    test('invalidates the project list so it refetches after a successful update',
+        () async {
+      when(() => mockUpdateProject(any()))
+          .thenAnswer((_) async => Right(project));
+
+      await container.read(projectListProvider.future);
+      verify(() => mockGetProjects()).called(1);
+
+      await submit(args);
+      await container.read(projectListProvider.future);
+
+      verify(() => mockGetProjects()).called(1);
     });
   });
 }
