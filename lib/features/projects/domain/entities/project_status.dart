@@ -16,4 +16,15 @@ enum ProjectStatus {
         ProjectStatus.completed => 'Completed',
         ProjectStatus.cancelled => 'Cancelled',
       };
+
+  /// Reverse of [label]. Throws [ArgumentError] rather than silently
+  /// defaulting when [label] doesn't match any known status - see
+  /// docs/system_requirements.md, seed data import.
+  static ProjectStatus fromLabel(String label) {
+    return ProjectStatus.values.firstWhere(
+      (status) => status.label == label,
+      orElse: () =>
+          throw ArgumentError('Unknown ProjectStatus label: "$label"'),
+    );
+  }
 }
