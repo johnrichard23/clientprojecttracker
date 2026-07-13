@@ -1,0 +1,38 @@
+# Local context docs - not part of the deliverable repo
+docs/
+
+# Cursor AI context/rules - local dev tooling only, not part of the deliverable
+.cursor/
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/pubspec.lock
+
+# Generated code (Riverpod / Drift build_runner output)
+**/*.g.dart
+**/*.freezed.dart
+**/*.drift.dart
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# macOS
+.DS_Store
+
+# iOS / Android build artifacts
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Pods/
+**/android/.gradle
+**/android/local.properties
+
+# Coverage
+coverage/
