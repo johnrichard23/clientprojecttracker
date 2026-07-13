@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:client_project_tracker/features/projects/presentation/screens/project_list_screen.dart';
+
 /// Route paths, defined once so navigation calls are compile-checked instead
 /// of built from raw strings scattered across the app. See
 /// docs/architecture.md, Section 9.
@@ -14,17 +16,15 @@ abstract final class AppRoutes {
   static String projectEditPath(String id) => '/projects/$id/edit';
 }
 
-/// TODO: wire real screens in as they're built (ProjectListScreen,
-/// ProjectFormScreen, ProjectDetailsScreen). This placeholder keeps the app
-/// runnable from the very first commit.
+/// TODO: wire real screens in as they're built (ProjectFormScreen,
+/// ProjectDetailsScreen). These placeholders keep the app runnable in the
+/// meantime.
 final appRouter = GoRouter(
   initialLocation: AppRoutes.projectList,
   routes: [
     GoRoute(
       path: AppRoutes.projectList,
-      builder: (context, state) => const _PlaceholderScreen(
-        title: 'Project List',
-      ),
+      builder: (context, state) => const ProjectListScreen(),
     ),
     GoRoute(
       path: AppRoutes.projectCreate,

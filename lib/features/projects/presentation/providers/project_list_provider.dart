@@ -45,6 +45,8 @@ class ProjectListFilter {
     this.priority,
   });
 
+  bool get isEmpty => searchText.isEmpty && status == null && priority == null;
+
   ProjectListFilter copyWith({
     String? searchText,
     ProjectStatus? status,
