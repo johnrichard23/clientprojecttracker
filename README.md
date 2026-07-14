@@ -18,6 +18,26 @@ works fully offline since everything is stored locally in SQLite.
 - Architecture is **Clean Architecture** — data / domain / presentation, one direction
   of dependency. 
 
+## Features Implemented
+
+**Core requirements**
+- Project List screen — client name, project name, status, priority, due date
+- Create Project screen with full validation
+- Edit Project screen
+- Project Details screen — full record, plus Edit and Delete
+- Full CRUD, backed by local SQLite (Drift) — no mock data, no backend dependency
+- Form validation — required fields, due date can't be before start date, description length capped, with inline per-field errors
+- Loading states on every async boundary (list fetch, single fetch, create, update, delete)
+- Error handling — every failure path shows a readable message and, where it makes sense, a retry action. No raw exceptions ever reach the screen.
+
+**Bonus features (all implemented)**
+- Offline support — SQLite is the primary store
+- Search — debounced, filters by client or project name
+- Filtering — by status and priority, combinable with search
+- State persistence — last-used search/filter and theme choice are remembered between sessions
+- Dark mode — full light/dark theme, follows system by default with a manual override, badge colors checked against WCAG AA contrast in both modes
+- Clean navigation — declarative routing (go_router), typed path params, no raw string-based navigation
+
 
 ## Setup
 
