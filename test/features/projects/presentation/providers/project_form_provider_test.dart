@@ -9,8 +9,10 @@ import 'package:client_project_tracker/features/projects/domain/entities/project
 import 'package:client_project_tracker/features/projects/domain/entities/project_priority.dart';
 import 'package:client_project_tracker/features/projects/domain/entities/project_status.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/create_project.dart';
+import 'package:client_project_tracker/features/projects/domain/usecases/get_project_by_id.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/get_projects.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/update_project.dart';
+import 'package:client_project_tracker/features/projects/presentation/providers/project_details_provider.dart';
 import 'package:client_project_tracker/features/projects/presentation/providers/project_form_provider.dart';
 import 'package:client_project_tracker/features/projects/presentation/providers/project_list_provider.dart';
 
@@ -20,10 +22,13 @@ class MockUpdateProject extends Mock implements UpdateProject {}
 
 class MockGetProjects extends Mock implements GetProjects {}
 
+class MockGetProjectById extends Mock implements GetProjectById {}
+
 void main() {
   late MockCreateProject mockCreateProject;
   late MockUpdateProject mockUpdateProject;
   late MockGetProjects mockGetProjects;
+  late MockGetProjectById mockGetProjectById;
   late ProviderContainer container;
 
   final project = Project(
@@ -63,11 +68,13 @@ void main() {
     mockCreateProject = MockCreateProject();
     mockUpdateProject = MockUpdateProject();
     mockGetProjects = MockGetProjects();
+    mockGetProjectById = MockGetProjectById();
     when(() => mockGetProjects()).thenAnswer((_) async => const Right([]));
     container = ProviderContainer(overrides: [
       createProjectProvider.overrideWithValue(mockCreateProject),
       updateProjectProvider.overrideWithValue(mockUpdateProject),
       getProjectsProvider.overrideWithValue(mockGetProjects),
+      getProjectByIdProvider.overrideWithValue(mockGetProjectById),
     ]);
     addTearDown(container.dispose);
   });
@@ -210,6 +217,23 @@ void main() {
       await container.read(projectListProvider.future);
 
       verify(() => mockGetProjects()).called(1);
+    });
+
+    test(
+        'invalidates the details provider for the edited project so it '
+        'refetches after a successful update', () async {
+      when(() => mockGetProjectById(project.id))
+          .thenAnswer((_) async => Right(project));
+      when(() => mockUpdateProject(any()))
+          .thenAnswer((_) async => Right(project));
+
+      await container.read(projectDetailsProvider(project.id).future);
+      verify(() => mockGetProjectById(project.id)).called(1);
+
+      await submit(args);
+      await container.read(projectDetailsProvider(project.id).future);
+
+      verify(() => mockGetProjectById(project.id)).called(1);
     });
   });
 }

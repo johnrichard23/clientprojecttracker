@@ -7,6 +7,7 @@ import 'package:client_project_tracker/features/projects/domain/entities/project
 import 'package:client_project_tracker/features/projects/domain/entities/project_status.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/create_project.dart';
 import 'package:client_project_tracker/features/projects/domain/usecases/update_project.dart';
+import 'package:client_project_tracker/features/projects/presentation/providers/project_details_provider.dart';
 import 'package:client_project_tracker/features/projects/presentation/providers/project_list_provider.dart';
 
 enum ProjectFormMode { create, edit }
@@ -95,6 +96,9 @@ class ProjectFormNotifier
 
     if (result.isRight()) {
       ref.invalidate(projectListProvider);
+      if (arg.mode == ProjectFormMode.edit) {
+        ref.invalidate(projectDetailsProvider(arg.projectId!));
+      }
     }
   }
 }

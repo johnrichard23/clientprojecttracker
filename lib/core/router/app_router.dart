@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:client_project_tracker/features/projects/presentation/screens/project_details_screen.dart';
 import 'package:client_project_tracker/features/projects/presentation/screens/project_form_screen.dart';
 import 'package:client_project_tracker/features/projects/presentation/screens/project_list_screen.dart';
 
@@ -17,8 +17,6 @@ abstract final class AppRoutes {
   static String projectEditPath(String id) => '/projects/$id/edit';
 }
 
-/// TODO: wire real screen in as it's built (ProjectDetailsScreen). This
-/// placeholder keeps the app runnable in the meantime.
 final appRouter = GoRouter(
   initialLocation: AppRoutes.projectList,
   routes: [
@@ -32,8 +30,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.projectDetails,
-      builder: (context, state) => _PlaceholderScreen(
-        title: 'Project Details (${state.pathParameters['id']})',
+      builder: (context, state) => ProjectDetailsScreen(
+        projectId: state.pathParameters['id']!,
       ),
     ),
     GoRoute(
@@ -44,17 +42,3 @@ final appRouter = GoRouter(
     ),
   ],
 );
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-
-  const _PlaceholderScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text('$title screen - not built yet.')),
-    );
-  }
-}
