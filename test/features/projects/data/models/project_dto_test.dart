@@ -50,7 +50,7 @@ void main() {
       expect(dto.clientName, 'Acme Corporation');
       expect(dto.projectName, 'Corporate Website Redesign');
       expect(dto.description,
-          "Redesign and modernize the company's corporate website.");
+          "Redesign and modernize the company's corporate website.",);
     });
 
     test('parses status and priority display labels into enum values', () {

@@ -54,7 +54,7 @@ class CreateProject {
       return Left(ValidationFailure(
         'Please fix the highlighted fields.',
         fieldErrors: validation.fieldErrors,
-      ));
+      ),);
     }
 
     final project = Project(

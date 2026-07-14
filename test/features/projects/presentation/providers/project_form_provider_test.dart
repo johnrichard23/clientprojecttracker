@@ -51,7 +51,7 @@ void main() {
       priority: ProjectPriority.medium,
       startDate: DateTime(2026, 1, 1),
       dueDate: DateTime(2026, 1, 2),
-    ));
+    ),);
     registerFallbackValue(UpdateProjectParams(
       id: 'fallback',
       clientName: 'fallback',
@@ -61,7 +61,7 @@ void main() {
       priority: ProjectPriority.medium,
       startDate: DateTime(2026, 1, 1),
       dueDate: DateTime(2026, 1, 2),
-    ));
+    ),);
   });
 
   setUp(() {
@@ -75,7 +75,7 @@ void main() {
       updateProjectProvider.overrideWithValue(mockUpdateProject),
       getProjectsProvider.overrideWithValue(mockGetProjects),
       getProjectByIdProvider.overrideWithValue(mockGetProjectById),
-    ]);
+    ],);
     addTearDown(container.dispose);
   });
 
@@ -116,12 +116,12 @@ void main() {
     test(
         'surfaces ValidationFailure field errors without touching UpdateProject',
         () async {
-      final failure = ValidationFailure(
+      const failure = ValidationFailure(
         'Please fix the highlighted fields.',
         fieldErrors: {'clientName': 'Client name is required.'},
       );
       when(() => mockCreateProject(any()))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       await submit(args, clientName: '');
 
@@ -150,12 +150,12 @@ void main() {
 
     test('does not invalidate the project list when create fails validation',
         () async {
-      final failure = ValidationFailure(
+      const failure = ValidationFailure(
         'Please fix the highlighted fields.',
         fieldErrors: {'clientName': 'Client name is required.'},
       );
       when(() => mockCreateProject(any()))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       await container.read(projectListProvider.future);
       verify(() => mockGetProjects()).called(1);
@@ -190,18 +190,18 @@ void main() {
     test(
         'surfaces ValidationFailure field errors without touching CreateProject',
         () async {
-      final failure = ValidationFailure(
+      const failure = ValidationFailure(
         'Please fix the highlighted fields.',
         fieldErrors: {'dueDate': 'Due date cannot be before the start date.'},
       );
       when(() => mockUpdateProject(any()))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       await submit(args);
 
       final notifier = container.read(projectFormProvider(args).notifier);
       expect(notifier.fieldErrors,
-          {'dueDate': 'Due date cannot be before the start date.'});
+          {'dueDate': 'Due date cannot be before the start date.'},);
       verifyNever(() => mockCreateProject(any()));
     });
 

@@ -46,7 +46,7 @@ void main() {
     container = ProviderContainer(overrides: [
       getProjectsProvider.overrideWithValue(mockGetProjects),
       sharedPreferencesProvider.overrideWithValue(prefs),
-    ]);
+    ],);
     addTearDown(container.dispose);
   });
 
@@ -70,8 +70,8 @@ void main() {
     });
 
     test('emits loading then error when the use case fails', () async {
-      final failure = DatabaseFailure('boom');
-      when(() => mockGetProjects()).thenAnswer((_) async => Left(failure));
+      const failure = DatabaseFailure('boom');
+      when(() => mockGetProjects()).thenAnswer((_) async => const Left(failure));
 
       final states = <AsyncValue<List<Project>>>[];
       container.listen(
@@ -112,7 +112,7 @@ void main() {
 
       notifier.setStatusFilter(ProjectStatus.inProgress);
       expect(container.read(projectFilterProvider).status,
-          ProjectStatus.inProgress);
+          ProjectStatus.inProgress,);
       expect(prefs.getString('project_filter_status'), 'inProgress');
 
       notifier.setStatusFilter(null);
@@ -124,7 +124,7 @@ void main() {
       final notifier = container.read(projectFilterProvider.notifier);
       notifier.setPriorityFilter(ProjectPriority.high);
       expect(
-          container.read(projectFilterProvider).priority, ProjectPriority.high);
+          container.read(projectFilterProvider).priority, ProjectPriority.high,);
 
       final prefs = container.read(sharedPreferencesProvider);
       expect(prefs.getString('project_filter_priority'), 'high');
@@ -155,7 +155,7 @@ void main() {
       final freshContainer = ProviderContainer(overrides: [
         getProjectsProvider.overrideWithValue(mockGetProjects),
         sharedPreferencesProvider.overrideWithValue(prefs),
-      ]);
+      ],);
       addTearDown(freshContainer.dispose);
 
       final filter = freshContainer.read(projectFilterProvider);
@@ -185,15 +185,15 @@ void main() {
         _project(
             id: '1',
             status: ProjectStatus.inProgress,
-            priority: ProjectPriority.high),
+            priority: ProjectPriority.high,),
         _project(
             id: '2',
             status: ProjectStatus.inProgress,
-            priority: ProjectPriority.low),
+            priority: ProjectPriority.low,),
         _project(
             id: '3',
             status: ProjectStatus.completed,
-            priority: ProjectPriority.high),
+            priority: ProjectPriority.high,),
       ];
       when(() => mockGetProjects()).thenAnswer((_) async => Right(projects));
       await container.read(projectListProvider.future);
@@ -207,8 +207,8 @@ void main() {
     });
 
     test('propagates the loading/error state of the underlying list', () async {
-      final failure = DatabaseFailure('boom');
-      when(() => mockGetProjects()).thenAnswer((_) async => Left(failure));
+      const failure = DatabaseFailure('boom');
+      when(() => mockGetProjects()).thenAnswer((_) async => const Left(failure));
 
       await container
           .read(projectListProvider.future)

@@ -66,13 +66,13 @@ void main() {
           priority: 'medium',
           startDate: DateTime(2026, 1, 1),
           dueDate: DateTime(2026, 1, 2),
-        ));
+        ),);
 
     var loadJsonCalled = false;
     final loader = ProjectSeedLoader(db, loadJson: () async {
       loadJsonCalled = true;
       return _seedJson;
-    });
+    },);
 
     await loader.seedIfEmpty();
 

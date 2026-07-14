@@ -39,7 +39,7 @@ void main() {
     container = ProviderContainer(overrides: [
       getProjectByIdProvider.overrideWithValue(mockGetProjectById),
       deleteProjectProvider.overrideWithValue(mockDeleteProject),
-    ]);
+    ],);
     addTearDown(container.dispose);
   });
 
@@ -62,9 +62,9 @@ void main() {
   });
 
   test('emits loading then error when the fetch fails', () async {
-    final failure = NotFoundFailure('No project found with id "$projectId".');
+    const failure = NotFoundFailure('No project found with id "$projectId".');
     when(() => mockGetProjectById(projectId))
-        .thenAnswer((_) async => Left(failure));
+        .thenAnswer((_) async => const Left(failure));
 
     final states = <AsyncValue<Project>>[];
     container.listen(
@@ -90,12 +90,12 @@ void main() {
           .thenAnswer((_) async => Right(project));
       await container.read(projectDetailsProvider(projectId).future);
 
-      final notFound =
+      const notFound =
           NotFoundFailure('No project found with id "$projectId".');
       when(() => mockDeleteProject(projectId))
           .thenAnswer((_) async => const Right(unit));
       when(() => mockGetProjectById(projectId))
-          .thenAnswer((_) async => Left(notFound));
+          .thenAnswer((_) async => const Left(notFound));
 
       final result = await container
           .read(projectDetailsProvider(projectId).notifier)
@@ -115,15 +115,15 @@ void main() {
           .thenAnswer((_) async => Right(project));
       await container.read(projectDetailsProvider(projectId).future);
 
-      final failure = DatabaseFailure('boom');
+      const failure = DatabaseFailure('boom');
       when(() => mockDeleteProject(projectId))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       final result = await container
           .read(projectDetailsProvider(projectId).notifier)
           .delete();
 
-      expect(result, Left<Failure, Unit>(failure));
+      expect(result, const Left<Failure, Unit>(failure));
       final state = container.read(projectDetailsProvider(projectId));
       expect(state, isA<AsyncData<Project>>());
       expect(state.value, project);

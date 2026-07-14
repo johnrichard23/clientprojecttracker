@@ -24,7 +24,7 @@ void main() {
       priority: ProjectPriority.medium,
       startDate: DateTime(2026, 1, 1),
       dueDate: DateTime(2026, 1, 2),
-    ));
+    ),);
   });
 
   setUp(() {
@@ -64,7 +64,7 @@ void main() {
         expect(l, isA<ValidationFailure>());
         expect(
             (l as ValidationFailure).fieldErrors.containsKey('projectName'),
-            isTrue);
+            isTrue,);
       },
       (r) => fail('expected Left, got Right($r)'),
     );
@@ -74,7 +74,7 @@ void main() {
   test('builds a Project preserving the id and delegates to the repository',
       () async {
     when(() => repository.updateProject(any())).thenAnswer(
-        (invocation) async => Right(invocation.positionalArguments[0] as Project));
+        (invocation) async => Right(invocation.positionalArguments[0] as Project),);
 
     final result = await useCase(validParams);
 

@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart';
 import 'package:fpdart/fpdart.dart';
 
 import 'package:client_project_tracker/core/di/app_database.dart';

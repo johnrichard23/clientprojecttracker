@@ -21,9 +21,8 @@ class ProjectFormScreen extends ConsumerStatefulWidget {
       : mode = ProjectFormMode.create,
         projectId = null;
 
-  const ProjectFormScreen.edit({super.key, required String projectId})
-      : mode = ProjectFormMode.edit,
-        projectId = projectId;
+  const ProjectFormScreen.edit({super.key, required String this.projectId})
+      : mode = ProjectFormMode.edit;
 
   @override
   ConsumerState<ProjectFormScreen> createState() => _ProjectFormScreenState();
@@ -170,7 +169,7 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
       appBar: AppBar(
         title: Text(widget.mode == ProjectFormMode.create
             ? 'Create Project'
-            : 'Edit Project'),
+            : 'Edit Project',),
       ),
       body: SafeArea(
         child: ListView(
@@ -237,7 +236,7 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
               items: [
                 for (final priority in ProjectPriority.values)
                   DropdownMenuItem(
-                      value: priority, child: Text(priority.label)),
+                      value: priority, child: Text(priority.label),),
               ],
               onChanged: (value) {
                 if (value != null) setState(() => _priority = value);
@@ -300,7 +299,7 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
                     )
                   : Text(widget.mode == ProjectFormMode.create
                       ? 'Create Project'
-                      : 'Save Changes'),
+                      : 'Save Changes',),
             ),
           ],
         ),

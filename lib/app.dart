@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:client_project_tracker/core/di/providers.dart';
 import 'package:client_project_tracker/core/router/app_router.dart';
 import 'package:client_project_tracker/core/theme/app_theme.dart';
+import 'package:client_project_tracker/core/theme/theme_mode_provider.dart';
 
 /// Root widget. Gates the real app behind [appStartupProvider] (currently:
 /// seeding the database on first run) so nothing reads from an empty table
@@ -16,6 +17,7 @@ class ClientProjectTrackerApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final startup = ref.watch(appStartupProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return startup.when(
       data: (_) => MaterialApp.router(
@@ -23,15 +25,14 @@ class ClientProjectTrackerApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        // TODO: swap ThemeMode.system for a persisted themeModeProvider once
-        // shared_preferences wiring is in (docs/architecture.md, Section 10).
-        themeMode: ThemeMode.system,
+        themeMode: themeMode,
         routerConfig: appRouter,
       ),
       loading: () => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
+        themeMode: themeMode,
         home: const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
@@ -40,6 +41,7 @@ class ClientProjectTrackerApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
+        themeMode: themeMode,
         home: Scaffold(
           body: Center(
             child: Padding(

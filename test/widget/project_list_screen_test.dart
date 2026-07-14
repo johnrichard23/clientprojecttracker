@@ -60,8 +60,7 @@ void main() {
     );
   }
 
-  testWidgets(
-      'shows a loading indicator while the initial fetch is in flight',
+  testWidgets('shows a loading indicator while the initial fetch is in flight',
       (tester) async {
     when(() => mockGetProjects()).thenAnswer(
       (_) => Future.delayed(
@@ -88,7 +87,7 @@ void main() {
 
     expect(find.text('No projects yet'), findsOneWidget);
     expect(find.widgetWithText(FilledButton, 'Create your first project'),
-        findsOneWidget);
+        findsOneWidget,);
   });
 
   testWidgets('shows project rows with badges and due date when data loads',
@@ -128,8 +127,8 @@ void main() {
 
   testWidgets('shows an error message with retry when the fetch fails',
       (tester) async {
-    final failure = DatabaseFailure('Failed to load projects: boom');
-    when(() => mockGetProjects()).thenAnswer((_) async => Left(failure));
+    const failure = DatabaseFailure('Failed to load projects: boom');
+    when(() => mockGetProjects()).thenAnswer((_) async => const Left(failure));
 
     await pumpScreen(tester);
     await tester.pumpAndSettle();
@@ -170,9 +169,9 @@ void main() {
   testWidgets('status filter chip narrows the visible list', (tester) async {
     final projects = [
       _project(
-          id: '1', clientName: 'Acme Corp', status: ProjectStatus.inProgress),
+          id: '1', clientName: 'Acme Corp', status: ProjectStatus.inProgress,),
       _project(
-          id: '2', clientName: 'Beta LLC', status: ProjectStatus.completed),
+          id: '2', clientName: 'Beta LLC', status: ProjectStatus.completed,),
     ];
     when(() => mockGetProjects()).thenAnswer((_) async => Right(projects));
 
@@ -192,9 +191,8 @@ void main() {
   testWidgets('priority filter chip narrows the visible list', (tester) async {
     final projects = [
       _project(
-          id: '1', clientName: 'Acme Corp', priority: ProjectPriority.high),
-      _project(
-          id: '2', clientName: 'Beta LLC', priority: ProjectPriority.low),
+          id: '1', clientName: 'Acme Corp', priority: ProjectPriority.high,),
+      _project(id: '2', clientName: 'Beta LLC', priority: ProjectPriority.low),
     ];
     when(() => mockGetProjects()).thenAnswer((_) async => Right(projects));
 
@@ -209,5 +207,45 @@ void main() {
 
     expect(find.text('Acme Corp'), findsOneWidget);
     expect(find.text('Beta LLC'), findsNothing);
+  });
+
+  group('theme menu', () {
+    testWidgets('defaults to the system icon and lets the user switch to dark',
+        (tester) async {
+      when(() => mockGetProjects()).thenAnswer((_) async => const Right([]));
+
+      await pumpScreen(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.brightness_auto), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.brightness_auto));
+      await tester.pumpAndSettle();
+
+      expect(find.text('System'), findsOneWidget);
+      expect(find.text('Light'), findsOneWidget);
+      expect(find.text('Dark'), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(CheckedPopupMenuItem<ThemeMode>, 'Dark'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.dark_mode), findsOneWidget);
+    });
+
+    testWidgets('persists the selection via shared_preferences',
+        (tester) async {
+      when(() => mockGetProjects()).thenAnswer((_) async => const Right([]));
+
+      await pumpScreen(tester);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.brightness_auto));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(CheckedPopupMenuItem<ThemeMode>, 'Light'));
+      await tester.pumpAndSettle();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('theme_mode'), 'light');
+    });
   });
 }

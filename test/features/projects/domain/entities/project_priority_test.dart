@@ -16,7 +16,7 @@ void main() {
           (e) => e.message.toString(),
           'message',
           contains('Not A Real Priority'),
-        )),
+        ),),
       );
     });
   });

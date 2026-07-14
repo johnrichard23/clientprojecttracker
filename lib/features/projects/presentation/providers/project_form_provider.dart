@@ -77,7 +77,7 @@ class ProjectFormNotifier
             priority: priority,
             startDate: startDate,
             dueDate: dueDate,
-          ))
+          ),)
         : await ref.read(updateProjectProvider)(UpdateProjectParams(
             id: arg.projectId!,
             clientName: clientName,
@@ -87,7 +87,7 @@ class ProjectFormNotifier
             priority: priority,
             startDate: startDate,
             dueDate: dueDate,
-          ));
+          ),);
 
     state = result.match(
       (failure) => AsyncValue<Project?>.error(failure, StackTrace.current),

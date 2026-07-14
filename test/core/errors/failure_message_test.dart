@@ -6,7 +6,7 @@ import 'package:client_project_tracker/core/errors/failures.dart';
 void main() {
   group('Failure.toUserMessage', () {
     test('ValidationFailure produces a short, user-readable message', () {
-      final failure = ValidationFailure(
+      const failure = ValidationFailure(
         'clientName: required, dueDate: must be >= startDate',
         fieldErrors: {'clientName': 'Client name is required.'},
       );
@@ -19,7 +19,7 @@ void main() {
     });
 
     test('DatabaseFailure produces a short, user-readable message', () {
-      final failure = DatabaseFailure(
+      const failure = DatabaseFailure(
         'Failed to load projects: SqliteException(1): no such table: projects',
       );
 
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('NetworkFailure produces a short, user-readable message', () {
-      final failure = NetworkFailure('SocketException: Connection refused');
+      const failure = NetworkFailure('SocketException: Connection refused');
 
       final message = failure.toUserMessage();
 
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('NotFoundFailure produces a short, user-readable message', () {
-      final failure = NotFoundFailure('No project found with id "abc-123".');
+      const failure = NotFoundFailure('No project found with id "abc-123".');
 
       final message = failure.toUserMessage();
 
@@ -54,7 +54,7 @@ void main() {
     });
 
     test('UnknownFailure produces a short, user-readable message', () {
-      final failure = UnknownFailure('Unhandled exception: null check operator');
+      const failure = UnknownFailure('Unhandled exception: null check operator');
 
       final message = failure.toUserMessage();
 

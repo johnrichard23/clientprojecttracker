@@ -50,7 +50,7 @@ void main() {
       priority: ProjectPriority.medium,
       startDate: DateTime(2026, 1, 1),
       dueDate: DateTime(2026, 1, 2),
-    ));
+    ),);
     registerFallbackValue(UpdateProjectParams(
       id: 'fallback',
       clientName: 'fallback',
@@ -60,7 +60,7 @@ void main() {
       priority: ProjectPriority.medium,
       startDate: DateTime(2026, 1, 1),
       dueDate: DateTime(2026, 1, 2),
-    ));
+    ),);
   });
 
   setUp(() {
@@ -96,7 +96,7 @@ void main() {
           getProjectByIdProvider.overrideWithValue(mockGetProjectById),
           updateProjectProvider.overrideWithValue(mockUpdateProject),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           home: ProjectFormScreen.edit(projectId: projectId),
         ),
       ),
@@ -124,9 +124,9 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.widgetWithText(TextField, 'Client Name'), 'Acme Corp');
+          find.widgetWithText(TextField, 'Client Name'), 'Acme Corp',);
       await tester.enterText(
-          find.widgetWithText(TextField, 'Project Name'), 'Website Revamp');
+          find.widgetWithText(TextField, 'Project Name'), 'Website Revamp',);
 
       await tester.tap(find.widgetWithText(FilledButton, 'Create Project'));
       await tester.pumpAndSettle();
@@ -157,10 +157,10 @@ void main() {
 
     testWidgets('shows an error state when the project fetch fails',
         (tester) async {
-      final failure =
+      const failure =
           NotFoundFailure('No project found with id "$projectId".');
       when(() => mockGetProjectById(projectId))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       await pumpEditScreen(tester);
       await tester.pumpAndSettle();
@@ -179,7 +179,7 @@ void main() {
       expect(find.widgetWithText(TextField, 'Acme Corp'), findsOneWidget);
       expect(find.widgetWithText(TextField, 'Website Revamp'), findsOneWidget);
       expect(find.widgetWithText(TextField, 'Full redesign of the marketing site.'),
-          findsOneWidget);
+          findsOneWidget,);
       expect(find.text('In Progress'), findsOneWidget);
       expect(find.text('High'), findsOneWidget);
       expect(find.text('Jul 1, 2026'), findsOneWidget);
@@ -195,14 +195,14 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.widgetWithText(TextField, 'Acme Corp'), '');
+          find.widgetWithText(TextField, 'Acme Corp'), '',);
 
-      final failure = ValidationFailure(
+      const failure = ValidationFailure(
         'Please fix the highlighted fields.',
         fieldErrors: {'clientName': 'Client name is required.'},
       );
       when(() => mockUpdateProject(any()))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       await tester.tap(find.widgetWithText(FilledButton, 'Save Changes'));
       await tester.pumpAndSettle();
@@ -219,9 +219,9 @@ void main() {
       await pumpEditScreen(tester);
       await tester.pumpAndSettle();
 
-      final failure = DatabaseFailure('boom');
+      const failure = DatabaseFailure('boom');
       when(() => mockUpdateProject(any()))
-          .thenAnswer((_) async => Left(failure));
+          .thenAnswer((_) async => const Left(failure));
 
       await tester.tap(find.widgetWithText(FilledButton, 'Save Changes'));
       await tester.pumpAndSettle();
@@ -249,7 +249,7 @@ void main() {
           GoRoute(
             path: '/edit',
             builder: (context, state) =>
-                ProjectFormScreen.edit(projectId: projectId),
+                const ProjectFormScreen.edit(projectId: projectId),
           ),
         ],
       );

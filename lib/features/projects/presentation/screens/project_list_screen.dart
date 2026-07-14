@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:client_project_tracker/core/errors/failure_message.dart';
 import 'package:client_project_tracker/core/errors/failures.dart';
 import 'package:client_project_tracker/core/router/app_router.dart';
+import 'package:client_project_tracker/core/theme/theme_mode_provider.dart';
 import 'package:client_project_tracker/features/projects/presentation/providers/project_list_provider.dart';
 import 'package:client_project_tracker/features/projects/presentation/widgets/project_filter_chips.dart';
 import 'package:client_project_tracker/features/projects/presentation/widgets/project_list_tile.dart';
@@ -19,9 +20,29 @@ class ProjectListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filteredAsync = ref.watch(filteredProjectListProvider);
     final filter = ref.watch(projectFilterProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Projects')),
+      appBar: AppBar(
+        title: const Text('Projects'),
+        actions: [
+          PopupMenuButton<ThemeMode>(
+            tooltip: 'Change theme',
+            icon: Icon(themeMode.icon),
+            onSelected: (mode) =>
+                ref.read(themeModeProvider.notifier).setThemeMode(mode),
+            itemBuilder: (context) => ThemeMode.values
+                .map(
+                  (mode) => CheckedPopupMenuItem<ThemeMode>(
+                    value: mode,
+                    checked: mode == themeMode,
+                    child: Text(mode.label),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Create project',
         onPressed: () => context.push(AppRoutes.projectCreate),
