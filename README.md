@@ -1,6 +1,6 @@
 # Client Project Tracker
 
-A small Flutter app for managing client projects — built for a take-home assessment,
+A flutter app for managing client projects — built for a take-home assessment,
 so the focus here is on structure and code quality rather than piling on features.
 
 You can create, view, edit, and delete projects, plus search and filter the list. It
@@ -18,8 +18,6 @@ works fully offline since everything is stored locally in SQLite.
 - Architecture is **Clean Architecture** — data / domain / presentation, one direction
   of dependency. 
 
-Full breakdown of the architecture decisions and folder structure is documented
-separately (kept out of this repo on purpose — see the note at the bottom).
 
 ## Setup
 
@@ -57,8 +55,9 @@ flutter run
 ```
 
 Pick your target device/simulator when prompted, or pass `-d <device_id>` if you
-already know which one you want. Tested on an iOS simulator and an Android emulator —
-no platform-specific code beyond what Flutter handles for you.
+already know which one you want. Tested on an Android emulator (Pixel 10 Pro, API 34). No iOS-specific code was
+written, but I haven't been able to verify on an iOS simulator/device — that would
+need a Mac, which I didn't have available for this build.
 
 To run the test suite:
 
@@ -71,9 +70,11 @@ flutter test
 A few things weren't fully spelled out in the brief, so here's what I decided and why:
 
 - **No backend.** I went local (SQLite via Drift) so the app is genuinely offline-first rather than "mock data.
-- **After creating a project, I decided to send the user to that project's Details
-  screen** rather than just back to the list — felt like a better confirmation that the
-  save actually worked, versus dropping them back into a list they now have to scan.
+- **After creating a project, the user lands back on the project list screen, where the new entry
+  is immediately visible (the list refreshes automatically, no manual pull-to-refresh
+  needed). Editing an existing project returns to the project's Details screen
+  instead, since that's the more natural "you were just looking at this, here it is
+  again" flow.
 - **Delete requires a confirmation dialog.** Not required, but deleting a
   client's project record without confirmation felt like an easy way to lose real data
   by accident, so I added the guard rail.
@@ -81,4 +82,6 @@ A few things weren't fully spelled out in the brief, so here's what I decided an
   theme choice remembered between sessions) were listed as bonus features — I built
   all three in, since they didn't add much complexity given the architecture was
   already set up to support them cleanly.
+- **Seed data.** The app seeds itself with the 12 sample projects provided for this
+  assessment on first launch
 
